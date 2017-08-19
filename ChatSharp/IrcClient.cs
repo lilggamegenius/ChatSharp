@@ -126,6 +126,11 @@ namespace ChatSharp
         /// A list of users on this network that we are aware of.
         /// </summary>
         public UserPool Users { get; set; }
+        /// <summary>
+        /// A list of capabilities supported by the library, along with enabled and disabled capabilities
+        /// after negotiating with the server.
+        /// </summary>
+        public CapabilityPool Capabilities { get; set; }
 
         /// <summary>
         /// Creates a new IRC client, but will not connect until ConnectAsync is called.
@@ -152,6 +157,8 @@ namespace ChatSharp
             PrivmsgPrefix = "";
             Users = new UserPool();
             Users.Add(User); // Add self to user pool
+            Capabilities = new CapabilityPool();
+            Capabilities.AddRange(new string[] { "server-time" }); // List of supported capabilities
         }
 
         /// <summary>
@@ -225,6 +232,8 @@ namespace ChatSharp
                 }
 
                 NetworkStream.BeginRead(ReadBuffer, ReadBufferIndex, ReadBuffer.Length, DataRecieved, null);
+                // Begin capability negotiation
+                SendRawMessage("CAP LS 302");
                 // Write login info
                 if (!string.IsNullOrEmpty(User.Password))
                     SendRawMessage("PASS {0}", User.Password);
