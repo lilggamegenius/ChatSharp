@@ -67,6 +67,9 @@ namespace ChatSharp.Handlers
             client.SetHandler("405", ErrorHandlers.HandleError);//ERR_TOOMANYCHANNELS "<channel name> :You have joined too many \ channels"
             client.SetHandler("406", ErrorHandlers.HandleError);//ERR_WASNOSUCHNICK "<nickname> :There was no such nickname"
             client.SetHandler("407", ErrorHandlers.HandleError);//ERR_TOOMANYTARGETS "<target> :Duplicate recipients. No message \
+
+            // Capability handlers
+            client.SetHandler("CAP", CapabilityHandlers.HandleCapability);
         }
 
         public static void HandleNick(IrcClient client, IrcMessage message)
