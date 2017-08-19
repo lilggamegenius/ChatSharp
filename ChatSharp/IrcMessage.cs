@@ -25,6 +25,10 @@ namespace ChatSharp
         /// Additional parameters supplied with the message.
         /// </summary>
         public string[] Parameters { get; private set; }
+        /// <summary>
+        /// The message tags.
+        /// </summary>
+        public KeyValuePair<string, string>[] Tags { get; private set; }
 
         /// <summary>
         /// Initializes and decodes an IRC message, given the raw message from the server.
@@ -32,6 +36,31 @@ namespace ChatSharp
         public IrcMessage(string rawMessage)
         {
             RawMessage = rawMessage;
+
+            if (rawMessage.StartsWith("@"))
+            {
+                var rawTags = rawMessage.Substring(1, rawMessage.IndexOf(' ') - 1);
+                rawMessage = rawMessage.Substring(rawMessage.IndexOf(' ') + 1);
+
+                // Parse tags as key value pairs
+                var tags = new List<KeyValuePair<string, string>>();
+                foreach (string rawTag in rawTags.Split(';'))
+                {
+                    var replacedTag = rawTag.Replace(@"\:", ";");
+                    KeyValuePair<string, string> tag = new KeyValuePair<string, string>(replacedTag, string.Empty);
+
+                    if (replacedTag.Contains("="))
+                    {
+                        string key = replacedTag.Substring(0, replacedTag.IndexOf("="));
+                        string value = replacedTag.Substring(replacedTag.IndexOf("=") + 1);
+                        tag = new KeyValuePair<string, string>(key, value);
+                    }
+
+                    tags.Add(tag);
+                }
+
+                Tags = tags.ToArray();
+            }
 
             if (rawMessage.StartsWith(":"))
             {
