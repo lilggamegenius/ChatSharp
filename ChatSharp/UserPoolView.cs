@@ -9,7 +9,6 @@ namespace ChatSharp
     /// </summary>
     public class UserPoolView : IEnumerable<IrcUser>
     {
-        private UserPool Pool { get; set; }
         private IEnumerable<IrcUser> Users { get; set; }
 
         internal UserPoolView(IEnumerable<IrcUser> users)
