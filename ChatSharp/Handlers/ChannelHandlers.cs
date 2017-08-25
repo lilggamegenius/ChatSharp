@@ -48,8 +48,10 @@ namespace ChatSharp.Handlers
 
             if (user.Channels.Contains(channel))
                 user.Channels.Remove(channel);
-            client.OnUserPartedChannel(new ChannelUserEventArgs(client.Channels[message.Parameters[0]],
-                new IrcUser(message.Prefix)));
+            if (user.ChannelModes.ContainsKey(channel))
+                user.ChannelModes.Remove(channel);
+
+            client.OnUserPartedChannel(new ChannelUserEventArgs(channel, user));
         }
 
         public static void HandleUserListPart(IrcClient client, IrcMessage message)
