@@ -18,7 +18,7 @@ namespace ChatSharp.Handlers
                 if (!user.Channels.Contains(channel))
                     user.Channels.Add(channel);
 
-                client.OnUserJoinedChannel(new ChannelUserEventArgs(channel, new IrcUser(message.Prefix)));
+                client.OnUserJoinedChannel(new ChannelUserEventArgs(channel, user));
             }
         }
 
