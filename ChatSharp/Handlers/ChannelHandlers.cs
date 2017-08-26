@@ -10,8 +10,8 @@ namespace ChatSharp.Handlers
     {
         public static void HandleJoin(IrcClient client, IrcMessage message)
         {
-            var channel = client.Channels.GetOrAdd(message.Parameters[0]);
             var user = client.Users.GetOrAdd(message.Prefix);
+            var channel = client.Channels.GetOrAdd(message.Parameters[0]);
 
             if (channel != null)
             {
