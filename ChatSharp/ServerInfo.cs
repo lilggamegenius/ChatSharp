@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Linq;
+
 namespace ChatSharp
 {
     /// <summary>
@@ -8,7 +11,7 @@ namespace ChatSharp
         internal ServerInfo()
         {
             // Guess for some defaults
-            Prefixes = new[] { "ov", "@+" };
+            Prefixes = new[] { "ovhaq", "@+%&~" };
             SupportedChannelModes = new ChannelModes();
             IsGuess = true;
         }
@@ -21,6 +24,35 @@ namespace ChatSharp
             if (Prefixes[1].IndexOf(prefix) == -1)
                 return null;
             return Prefixes[0][Prefixes[1].IndexOf(prefix)];
+        }
+
+        /// <summary>
+        /// Gets the channel modes for a given user nick.
+        /// Returns an empty array if user has no modes.
+        /// </summary>
+        /// <returns></returns>
+        public List<char?> GetModesForNick(string nick)
+        {
+            var supportedPrefixes = Prefixes[1];
+            List<char?> modeList = new List<char?>();
+            List<char> nickPrefixes = new List<char>();
+
+            foreach (char prefix in supportedPrefixes)
+            {
+                if (nick.Contains(prefix))
+                {
+                    nick.Remove(nick.IndexOf(prefix));
+                    if (!nickPrefixes.Contains(prefix))
+                    {
+                        nickPrefixes.Add(prefix);
+                        var mode = GetModeForPrefix(prefix);
+                        if (!modeList.Contains(mode))
+                            modeList.Add(mode);
+                    }
+                }
+            }
+
+            return modeList;
         }
 
         /// <summary>
@@ -97,7 +129,7 @@ namespace ChatSharp
                 ParameterizedSettings = "k";
                 OptionallyParameterizedSettings = "flj";
                 Settings = string.Empty;
-                ChannelUserModes = "vo"; // I have no idea what I'm doing here
+                ChannelUserModes = "vhoaq"; // I have no idea what I'm doing here
             }
 
             /// <summary>

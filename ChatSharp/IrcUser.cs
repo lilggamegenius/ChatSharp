@@ -12,7 +12,7 @@ namespace ChatSharp
         internal IrcUser()
         {
             Channels = new ChannelCollection();
-            ChannelModes = new Dictionary<IrcChannel, char?>();
+            ChannelModes = new Dictionary<IrcChannel, List<char?>>();
         }
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace ChatSharp
         /// <value>The channels.</value>
         public ChannelCollection Channels { get; set; }
 
-        internal Dictionary<IrcChannel, char?> ChannelModes { get; set; }
+        internal Dictionary<IrcChannel, List<char?>> ChannelModes { get; set; }
 
         /// <summary>
         /// This user's hostmask (nick!user@host).

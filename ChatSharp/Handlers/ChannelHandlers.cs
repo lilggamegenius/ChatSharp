@@ -58,31 +58,25 @@ namespace ChatSharp.Handlers
         {
             var channel = client.Channels[message.Parameters[2]];
             var users = message.Parameters[3].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            foreach (var nick in users)
+            foreach (var rawNick in users)
             {
-                if (string.IsNullOrWhiteSpace(nick))
+                if (string.IsNullOrWhiteSpace(rawNick))
                     continue;
-                var mode = client.ServerInfo.GetModeForPrefix(nick[0]);
-                if (mode == null)
-                {
-                    var user = client.Users.GetOrAdd(nick);
-                    if (!user.Channels.Contains(channel))
-                        user.Channels.Add(channel);
-                    if (!user.ChannelModes.ContainsKey(channel))
-                        user.ChannelModes.Add(channel, null);
-                    else
-                        user.ChannelModes[channel] = null;
-                }
+
+                var nick = rawNick;
+                var modes = client.ServerInfo.GetModesForNick(nick);
+
+                if (modes.Count > 0)
+                    nick = rawNick.Remove(0, modes.Count);
+
+                var user = client.Users.GetOrAdd(nick);
+
+                if (!user.Channels.Contains(channel))
+                    user.Channels.Add(channel);
+                if (!user.ChannelModes.ContainsKey(channel))
+                    user.ChannelModes.Add(channel, modes);
                 else
-                {
-                    var user = client.Users.GetOrAdd(nick.Substring(1));
-                    if (!user.Channels.Contains(channel))
-                        user.Channels.Add(channel);
-                    if (!user.ChannelModes.ContainsKey(channel))
-                        user.ChannelModes.Add(channel, mode.Value);
-                    else
-                        user.ChannelModes[channel] = mode.Value;
-                }
+                    user.ChannelModes[channel] = modes;
             }
         }
 

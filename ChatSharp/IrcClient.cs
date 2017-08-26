@@ -158,7 +158,7 @@ namespace ChatSharp
             Users = new UserPool();
             Users.Add(User); // Add self to user pool
             Capabilities = new CapabilityPool();
-            Capabilities.AddRange(new string[] { "server-time" }); // List of supported capabilities
+            Capabilities.AddRange(new string[] { "server-time", "multi-prefix" }); // List of supported capabilities
         }
 
         /// <summary>

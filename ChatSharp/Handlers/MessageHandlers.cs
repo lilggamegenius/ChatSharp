@@ -1,5 +1,6 @@
 using ChatSharp.Events;
 using System.Linq;
+using System.Collections.Generic;
 using System;
 
 namespace ChatSharp.Handlers
@@ -182,15 +183,16 @@ namespace ChatSharp.Handlers
                                     new UserPoolView(channel.Users.Where(u =>
                                     {
                                         if (!u.ChannelModes.ContainsKey(channel))
-                                            u.ChannelModes.Add(channel, null);
-                                        return u.ChannelModes[channel] == c;
+                                            u.ChannelModes.Add(channel, new List<char?>());
+                                        return u.ChannelModes[channel].Contains(c);
                                     })));
                             }
                             var user = new IrcUser(message.Parameters[i]);
                             if (add)
                             {
                                 if (!channel.UsersByMode[c].Contains(user.Nick))
-                                    user.ChannelModes[channel] = c;
+                                    if (!user.ChannelModes[channel].Contains(c))
+                                        user.ChannelModes[channel].Add(c);
                             }
                             else
                             {
