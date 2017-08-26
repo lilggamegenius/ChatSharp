@@ -146,7 +146,6 @@ namespace ChatSharp
             User = user;
             ServerAddress = serverAddress;
             Encoding = Encoding.UTF8;
-            Channels = new ChannelCollection(this);
             Settings = new ClientSettings();
             Handlers = new Dictionary<string, MessageHandler>();
             MessageHandlers.RegisterDefaultHandlers(this);
@@ -155,6 +154,7 @@ namespace ChatSharp
             WriteQueue = new ConcurrentQueue<string>();
             ServerInfo = new ServerInfo();
             PrivmsgPrefix = "";
+            Channels = User.Channels = new ChannelCollection(this);
             Users = new UserPool();
             Users.Add(User); // Add self to user pool
             Capabilities = new CapabilityPool();
