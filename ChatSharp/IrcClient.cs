@@ -131,6 +131,11 @@ namespace ChatSharp
         /// after negotiating with the server.
         /// </summary>
         public CapabilityPool Capabilities { get; set; }
+        /// <summary>
+        /// Set to true when the client is negotiating IRC capabilities with the server.
+        /// If set to False, capability negotiation is finished.
+        /// </summary>
+        public bool IsNegotiatingCapabilities { get; internal set; }
 
         /// <summary>
         /// Creates a new IRC client, but will not connect until ConnectAsync is called.
@@ -158,7 +163,9 @@ namespace ChatSharp
             Users = new UserPool();
             Users.Add(User); // Add self to user pool
             Capabilities = new CapabilityPool();
-            Capabilities.AddRange(new string[] { "server-time", "multi-prefix" }); // List of supported capabilities
+            // List of supported capabilities
+            Capabilities.AddRange(new string[] { "server-time", "multi-prefix", "cap-notify" });
+            IsNegotiatingCapabilities = false;
         }
 
         /// <summary>
