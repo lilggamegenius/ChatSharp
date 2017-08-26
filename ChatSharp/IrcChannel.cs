@@ -107,5 +107,34 @@ namespace ChatSharp
         {
             Client.ChangeMode(Name, change);
         }
+
+        /// <summary>
+        /// True if this channel is equal to another (compares names).
+        /// </summary>
+        /// <returns></returns>
+        public bool Equals(IrcChannel other)
+        {
+            return other.Name == Name;
+        }
+
+        /// <summary>
+        /// True if this channel is equal to another (compares names).
+        /// </summary>
+        /// <returns></returns>
+        public override bool Equals(object obj)
+        {
+            if (obj is IrcChannel)
+                return Equals((IrcChannel)obj);
+            return false;
+        }
+
+        /// <summary>
+        /// Returns the hash code of the channel's name.
+        /// </summary>
+        /// <returns></returns>
+        public override int GetHashCode()
+        {
+            return Name.GetHashCode();
+        }
     }
 }
