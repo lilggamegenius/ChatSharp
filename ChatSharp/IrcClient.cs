@@ -163,8 +163,12 @@ namespace ChatSharp
             Users = new UserPool();
             Users.Add(User); // Add self to user pool
             Capabilities = new CapabilityPool();
+
             // List of supported capabilities
-            Capabilities.AddRange(new string[] { "server-time", "multi-prefix", "cap-notify", "znc.in/server-time", "znc.in/server-time-iso" });
+            Capabilities.AddRange(new string[] {
+                "server-time", "multi-prefix", "cap-notify", "znc.in/server-time", "znc.in/server-time-iso"
+            });
+
             IsNegotiatingCapabilities = false;
         }
 
