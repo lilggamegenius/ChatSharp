@@ -29,6 +29,10 @@ namespace ChatSharp
         /// The message tags.
         /// </summary>
         public KeyValuePair<string, string>[] Tags { get; private set; }
+        /// <summary>
+        /// The message timestamp in ISO 8601 format.
+        /// </summary>
+        public Timestamp Timestamp { get; private set; }
 
         /// <summary>
         /// Initializes and decodes an IRC message, given the raw message from the server.
@@ -97,6 +101,22 @@ namespace ChatSharp
                 // Violates RFC 1459, but we'll parse it anyway
                 Command = rawMessage;
                 Parameters = new string[0];
+            }
+
+            // Parse server-time message tag.
+            // Fallback to server-info if both znc.in/server-info and the former exists.
+            //
+            // znc.in/server-time tag
+            if (Tags.Any(tag => tag.Key == "t"))
+            {
+                var tag = Tags.SingleOrDefault(x => x.Key == "t");
+                Timestamp = new Timestamp(tag.Value, true);
+            }
+            // server-time tag
+            else if (Tags.Any(tag => tag.Key == "time"))
+            {
+                var tag = Tags.SingleOrDefault(x => x.Key == "time");
+                Timestamp = new Timestamp(tag.Value);
             }
         }
     }

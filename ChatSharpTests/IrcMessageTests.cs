@@ -81,5 +81,45 @@ namespace ChatSharp.Tests
             };
             CollectionAssert.AreEqual(fromMessage.Tags, compareTags);
         }
+
+        [TestMethod]
+        public void Timestamp_CompareISOString()
+        {
+            IrcMessage[] messages = {
+                new IrcMessage("@time=2011-10-19T16:40:51.620Z :Angel!angel@example.org PRIVMSG Wiz :Hello"),
+                new IrcMessage("@time=2012-06-30T23:59:59.419Z :John!~john@1.2.3.4 JOIN #chan")
+            };
+
+            string[] timestamps = {
+                "2011-10-19T16:40:51.620Z",
+                "2012-06-30T23:59:59.419Z"
+            };
+
+            Assert.AreEqual(messages[0].Timestamp.ToISOString(), timestamps[0]);
+            Assert.AreEqual(messages[1].Timestamp.ToISOString(), timestamps[1]);
+        }
+
+        [TestMethod]
+        public void Timestamp_FromTimestamp()
+        {
+            IrcMessage[] messages = {
+                new IrcMessage("@t=1504923966 :Angel!angel@example.org PRIVMSG Wiz :Hello"),
+                new IrcMessage("@t=1504923972 :John!~john@1.2.3.4 JOIN #chan")
+            };
+
+            string[] timestamps = {
+                "2017-09-09T02:26:06.000Z",
+                "2017-09-09T02:26:12.000Z"
+            };
+
+            Assert.AreEqual(messages[0].Timestamp.ToISOString(), timestamps[0]);
+            Assert.AreEqual(messages[1].Timestamp.ToISOString(), timestamps[1]);
+        }
+
+        [TestMethod]
+        public void Timestamp_FailOnLeap()
+        {
+            Assert.ThrowsException<ArgumentException>(() => new IrcMessage("@time=2012-06-30T23:59:60.419Z :John!~john@1.2.3.4 JOIN #chan"));
+        }
     }
 }
