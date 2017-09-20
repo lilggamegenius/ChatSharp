@@ -89,7 +89,7 @@ namespace ChatSharp
         /// </summary>
         public void Part(string reason)
         {
-            Client.PartChannel(Name); // TODO
+            Client.PartChannel(Name, reason);
         }
 
         /// <summary>
