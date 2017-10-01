@@ -40,6 +40,7 @@ namespace ChatSharp
         public IrcMessage(string rawMessage)
         {
             RawMessage = rawMessage;
+            Tags = new KeyValuePair<string, string>[] { };
 
             if (rawMessage.StartsWith("@"))
             {
