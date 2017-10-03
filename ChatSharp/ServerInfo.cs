@@ -14,6 +14,7 @@ namespace ChatSharp
             Prefixes = new[] { "ovhaq", "@+%&~" };
             SupportedChannelModes = new ChannelModes();
             IsGuess = true;
+            ExtendedWho = false;
         }
 
         /// <summary>
@@ -116,6 +117,10 @@ namespace ChatSharp
         /// Set to the maximum length of an away message
         /// </summary>
         public int? MaxAwayLength { get; set; }
+        /// <summary>
+        /// Server supports WHOX (WHO extension)
+        /// </summary>
+        public bool ExtendedWho { get; set; }
 
         /// <summary>
         /// Modes a server supports that are applicable to channels.

@@ -41,10 +41,12 @@ namespace ChatSharp.Handlers
             client.SetHandler("311", UserHandlers.HandleWhoIsUser);
             client.SetHandler("312", UserHandlers.HandleWhoIsServer);
             client.SetHandler("313", UserHandlers.HandleWhoIsOperator);
+            client.SetHandler("315", UserHandlers.HandleWhoEnd);
             client.SetHandler("317", UserHandlers.HandleWhoIsIdle);
             client.SetHandler("318", UserHandlers.HandleWhoIsEnd);
             client.SetHandler("319", UserHandlers.HandleWhoIsChannels);
             client.SetHandler("330", UserHandlers.HandleWhoIsLoggedInAs);
+            client.SetHandler("354", UserHandlers.HandleWhox);
 
             // Listing handlers
             client.SetHandler("367", ListingHandlers.HandleBanListPart);

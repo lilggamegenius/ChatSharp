@@ -43,6 +43,8 @@ namespace ChatSharp
             return new DateTime(1970, 1, 1).AddSeconds(time);
         }
 
+        internal static Random RandomNumber { get; private set; }
+
         private const int ReadBufferLength = 1024;
 
         private byte[] ReadBuffer { get; set; }
@@ -170,6 +172,8 @@ namespace ChatSharp
             });
 
             IsNegotiatingCapabilities = false;
+
+            RandomNumber = new Random();
         }
 
         /// <summary>
@@ -570,6 +574,14 @@ namespace ChatSharp
         internal void OnUserQuit(UserEventArgs e)
         {
             if (UserQuit != null) UserQuit(this, e);
+        }
+        /// <summary>
+        /// Occurs when a WHO (WHOX protocol) is received.
+        /// </summary>
+        public event EventHandler<WhoxReceivedEventArgs> WhoxReceived;
+        internal void OnWhoxReceived(WhoxReceivedEventArgs e)
+        {
+            WhoxReceived?.Invoke(this, e);
         }
     }
 }
