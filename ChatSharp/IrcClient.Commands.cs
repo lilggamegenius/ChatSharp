@@ -74,11 +74,16 @@ namespace ChatSharp
         /// <summary>
         /// Joins the specified channel.
         /// </summary>
-        public void JoinChannel(string channel)
+        public void JoinChannel(string channel, string key = null)
         {
             if (Channels.Contains(channel))
-                throw new InvalidOperationException("Client is not already present in channel.");
-            SendRawMessage("JOIN {0}", channel);
+                throw new InvalidOperationException("Client is already present in channel.");
+
+            string joinCmd = string.Format("JOIN {0}", channel);
+            if (!string.IsNullOrEmpty(key))
+                joinCmd += string.Format(" {0}", key);
+
+            SendRawMessage(joinCmd, channel);
         }
 
         /// <summary>
