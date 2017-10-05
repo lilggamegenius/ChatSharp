@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace ChatSharp.Handlers
 {
@@ -69,6 +70,133 @@ namespace ChatSharp.Handlers
             if (request.Callback != null)
                 request.Callback(request);
             client.OnWhoIsReceived(new Events.WhoIsReceivedEventArgs(whois));
+        }
+
+        public static void HandleWhox(IrcClient client, IrcMessage message)
+        {
+            int msgQueryType = int.Parse(message.Parameters[1]);
+            var whoxQuery = new KeyValuePair<string, RequestOperation>();
+
+            foreach (var query in client.RequestManager.PendingOperations.Where(kvp => kvp.Key.StartsWith("WHO ")))
+            {
+                // Parse query to retrieve querytype
+                string key = query.Key;
+                string[] queryParts = key.Split(new[] { ' ' });
+
+                int queryType = int.Parse(queryParts[2]);
+
+                // Check querytype against message querytype
+                if (queryType == msgQueryType) whoxQuery = query;
+            }
+
+            if (whoxQuery.Key != string.Empty && whoxQuery.Value != null)
+            {
+                var whoxList = (List<ExtendedWho>)client.RequestManager.PeekOperation(whoxQuery.Key).State;
+                var whox = new ExtendedWho();
+
+                string key = whoxQuery.Key;
+                string[] queryParts = key.Split(new[] { ' ' });
+
+                // Handle what fields were included in the WHOX request
+                WhoxField fields = (WhoxField)int.Parse(queryParts[3]);
+                int fieldIdx = 1;
+                do
+                {
+                    if ((fields & WhoxField.QueryType) != 0)
+                    {
+                        whox.QueryType = msgQueryType;
+                        fieldIdx++;
+                    }
+
+                    if ((fields & WhoxField.Channel) != 0)
+                    {
+                        whox.Channel = message.Parameters[fieldIdx];
+                        fieldIdx++;
+                    }
+
+                    if ((fields & WhoxField.Username) != 0)
+                    {
+                        whox.User.User = message.Parameters[fieldIdx];
+                        fieldIdx++;
+                    }
+
+                    if ((fields & WhoxField.UserIp) != 0)
+                    {
+                        whox.IP = message.Parameters[fieldIdx];
+                        fieldIdx++;
+                    }
+
+                    if ((fields & WhoxField.Hostname) != 0)
+                    {
+                        whox.User.Hostname = message.Parameters[fieldIdx];
+                        fieldIdx++;
+                    }
+
+                    if ((fields & WhoxField.ServerName) != 0)
+                    {
+                        whox.Server = message.Parameters[fieldIdx];
+                        fieldIdx++;
+                    }
+
+                    if ((fields & WhoxField.Nick) != 0)
+                    {
+                        whox.User.Nick = message.Parameters[fieldIdx];
+                        fieldIdx++;
+                    }
+
+                    if ((fields & WhoxField.Flags) != 0)
+                    {
+                        whox.Flags = message.Parameters[fieldIdx];
+                        fieldIdx++;
+                    }
+
+                    if ((fields & WhoxField.Hops) != 0)
+                    {
+                        whox.Hops = int.Parse(message.Parameters[fieldIdx]);
+                        fieldIdx++;
+                    }
+
+                    if ((fields & WhoxField.TimeIdle) != 0)
+                    {
+                        whox.TimeIdle = int.Parse(message.Parameters[fieldIdx]);
+                        fieldIdx++;
+                    }
+
+                    if ((fields & WhoxField.AccountName) != 0)
+                    {
+                        whox.Account = message.Parameters[fieldIdx];
+                        fieldIdx++;
+                    }
+
+                    if ((fields & WhoxField.OpLevel) != 0)
+                    {
+                        whox.OpLevel = message.Parameters[fieldIdx];
+                        fieldIdx++;
+                    }
+
+                    if ((fields & WhoxField.RealName) != 0)
+                    {
+                        whox.User.RealName = message.Parameters[fieldIdx];
+                        fieldIdx++;
+                    }
+                }
+                while (fieldIdx < message.Parameters.Length - 1);
+                whoxList.Add(whox);
+            }
+        }
+
+        public static void HandleWhoEnd(IrcClient client, IrcMessage message)
+        {
+            var query = client.RequestManager.PendingOperations.Where(kvp => kvp.Key.StartsWith("WHO " + message.Parameters[1])).FirstOrDefault();
+            var request = client.RequestManager.DequeueOperation(query.Key);
+            var whoxList = (List<ExtendedWho>)request.State;
+
+            foreach (var whox in whoxList)
+                if (!client.Users.Contains(whox.User.Nick))
+                    client.Users.Add(whox.User);
+
+            request.Callback?.Invoke(request);
+            client.OnWhoxReceived(new Events.WhoxReceivedEventArgs(whoxList.ToArray()));
         }
     }
 }

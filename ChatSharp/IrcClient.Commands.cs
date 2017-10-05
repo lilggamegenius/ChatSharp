@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ChatSharp
@@ -143,6 +144,35 @@ namespace ChatSharp
                         callback((WhoIs)ro.State);
                 }));
             SendRawMessage("WHOIS {0}", nick);
+        }
+
+        /// <summary>
+        /// Sends an extended WHO query asking for specific information about a single user
+        /// or the users in a channel, and runs a callback when we have received the response.
+        /// </summary>
+        public void Who(string target, WhoxFlag flags, WhoxField fields, Action<ExtendedWho> callback)
+        {
+            if (ServerInfo.ExtendedWho)
+            {
+                var whox = new List<ExtendedWho>();
+
+                // Generate random querytype for WHO query
+                int queryType = RandomNumber.Next(0, 999);
+
+                // Add the querytype field if it wasn't defined
+                var _fields = fields;
+                if ((fields & WhoxField.QueryType) == 0)
+                    _fields |= WhoxField.QueryType;
+
+                string whoQuery = string.Format("WHO {0} {1}%{2},{3}", target, flags.AsString(), _fields.AsString(), queryType);
+                string queryKey = string.Format("WHO {0} {1} {2:D}", target, queryType, _fields);
+
+                RequestManager.QueueOperation(queryKey, new RequestOperation(whox, ro =>
+                {
+                    callback?.Invoke((ExtendedWho)ro.State);
+                }));
+                SendRawMessage(whoQuery);
+            }
         }
 
         /// <summary>

@@ -86,6 +86,15 @@ namespace ChatSharp.Handlers
                             break;
                     }
                 }
+                else
+                {
+                    switch (key.ToUpper())
+                    {
+                        case "WHOX":
+                            client.ServerInfo.ExtendedWho = true;
+                            break;
+                    }
+                }
             }
             client.OnServerInfoRecieved(new SupportsEventArgs(client.ServerInfo));
         }

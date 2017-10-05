@@ -11,7 +11,7 @@ namespace ChatSharp
             PendingOperations = new Dictionary<string, RequestOperation>();
         }
 
-        private Dictionary<string, RequestOperation> PendingOperations { get; set; }
+        internal Dictionary<string, RequestOperation> PendingOperations { get; private set; }
 
         public void QueueOperation(string key, RequestOperation operation)
         {
