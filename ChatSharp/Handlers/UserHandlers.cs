@@ -164,7 +164,7 @@ namespace ChatSharp.Handlers
 
                     if ((fields & WhoxField.AccountName) != 0)
                     {
-                        whox.Account = message.Parameters[fieldIdx];
+                        whox.User.Account = message.Parameters[fieldIdx];
                         fieldIdx++;
                     }
 
@@ -197,6 +197,12 @@ namespace ChatSharp.Handlers
 
             request.Callback?.Invoke(request);
             client.OnWhoxReceived(new Events.WhoxReceivedEventArgs(whoxList.ToArray()));
+        }
+
+        public static void HandleAccount(IrcClient client, IrcMessage message)
+        {
+            var user = client.Users.GetOrAdd(message.Prefix);
+            user.Account = message.Parameters[0];
         }
     }
 }

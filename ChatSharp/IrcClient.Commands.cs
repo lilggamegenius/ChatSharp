@@ -84,6 +84,22 @@ namespace ChatSharp
                 joinCmd += string.Format(" {0}", key);
 
             SendRawMessage(joinCmd, channel);
+
+            // account-notify capability
+            var flags = WhoxField.Nick | WhoxField.Hostname | WhoxField.AccountName | WhoxField.Username;
+
+            if (Capabilities.IsEnabled("account-notify"))
+                Who(channel, WhoxFlag.None, flags, (whoList) =>
+                {
+                    if (whoList.Count > 0)
+                    {
+                        foreach (var whoQuery in whoList)
+                        {
+                            var user = Users.GetOrAdd(whoQuery.User.Hostmask);
+                            user.Account = whoQuery.User.Account;
+                        }
+                    }
+                });
         }
 
         /// <summary>

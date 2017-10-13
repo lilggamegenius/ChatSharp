@@ -19,7 +19,6 @@ namespace ChatSharp
             Flags = string.Empty;
             Hops = -1;
             TimeIdle = -1;
-            Account = "*";
             OpLevel = "n/a";
         }
 
@@ -56,10 +55,6 @@ namespace ChatSharp
         /// Time the user has been idle for
         /// </summary>
         public int TimeIdle { get; internal set; }
-        /// <summary>
-        /// User account name (NickServ or similar)
-        /// </summary>
-        public string Account { get; internal set; }
         /// <summary>
         /// OP level of the user in the channel
         /// </summary>
