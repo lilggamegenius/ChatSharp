@@ -18,6 +18,14 @@ namespace ChatSharp.Handlers
                 if (!user.Channels.Contains(channel))
                     user.Channels.Add(channel);
 
+                // account-notify capability
+                if (client.Capabilities.IsEnabled("account-notify"))
+                    client.Who(user.Nick, WhoxFlag.None, WhoxField.Nick | WhoxField.AccountName, (whoQuery) =>
+                    {
+                        if (whoQuery.Count == 1)
+                            user.Account = whoQuery[0].User.Account;
+                    });
+
                 client.OnUserJoinedChannel(new ChannelUserEventArgs(channel, user));
             }
         }

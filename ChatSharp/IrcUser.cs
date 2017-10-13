@@ -13,6 +13,7 @@ namespace ChatSharp
         {
             Channels = new ChannelCollection();
             ChannelModes = new Dictionary<IrcChannel, List<char?>>();
+            Account = "*";
         }
 
         /// <summary>
@@ -97,6 +98,11 @@ namespace ChatSharp
         /// </summary>
         /// <value>The channels.</value>
         public ChannelCollection Channels { get; set; }
+        /// <summary>
+        /// The user's account. If 0 or *, the user is not logged in.
+        /// Otherwise, the user is logged in with services.
+        /// </summary>
+        public string Account { get; set; }
 
         internal Dictionary<IrcChannel, List<char?>> ChannelModes { get; set; }
 
