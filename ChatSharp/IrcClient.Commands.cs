@@ -155,7 +155,7 @@ namespace ChatSharp
         /// Sends an extended WHO query asking for specific information about a single user
         /// or the users in a channel, and runs a callback when we have received the response.
         /// </summary>
-        public void Who(string target, WhoxFlag flags, WhoxField fields, Action<ExtendedWho> callback)
+        public void Who(string target, WhoxFlag flags, WhoxField fields, Action<List<ExtendedWho>> callback)
         {
             if (ServerInfo.ExtendedWho)
             {
@@ -174,7 +174,7 @@ namespace ChatSharp
 
                 RequestManager.QueueOperation(queryKey, new RequestOperation(whox, ro =>
                 {
-                    callback?.Invoke((ExtendedWho)ro.State);
+                    callback?.Invoke((List<ExtendedWho>)ro.State);
                 }));
                 SendRawMessage(whoQuery);
             }
