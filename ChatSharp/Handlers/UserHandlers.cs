@@ -204,5 +204,22 @@ namespace ChatSharp.Handlers
             var user = client.Users.GetOrAdd(message.Prefix);
             user.Account = message.Parameters[0];
         }
+
+        public static void HandleChangeHost(IrcClient client, IrcMessage message)
+        {
+            var user = client.Users.Get(message.Prefix);
+
+            // Only handle CHGHOST for users we know
+            if (user != null)
+            {
+                var newIdent = message.Parameters[0];
+                var newHostname = message.Parameters[1];
+
+                if (user.User != newIdent)
+                    user.User = newIdent;
+                if (user.Hostname != newHostname)
+                    user.Hostname = newHostname;
+            }
+        }
     }
 }
