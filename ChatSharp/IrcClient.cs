@@ -169,7 +169,7 @@ namespace ChatSharp
             // List of supported capabilities
             Capabilities.AddRange(new string[] {
                 "server-time", "multi-prefix", "cap-notify", "znc.in/server-time", "znc.in/server-time-iso",
-                "account-notify", "chghost"
+                "account-notify", "chghost", "userhost-in-names"
             });
 
             IsNegotiatingCapabilities = false;

@@ -64,27 +64,64 @@ namespace ChatSharp.Handlers
 
         public static void HandleUserListPart(IrcClient client, IrcMessage message)
         {
-            var channel = client.Channels[message.Parameters[2]];
-            var users = message.Parameters[3].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            foreach (var rawNick in users)
+            if (client.Capabilities.IsEnabled("userhost-in-names"))
             {
-                if (string.IsNullOrWhiteSpace(rawNick))
-                    continue;
+                var channel = client.Channels[message.Parameters[2]];
+                var users = message.Parameters[3].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var hostmask in users)
+                {
+                    if (string.IsNullOrWhiteSpace(hostmask))
+                        continue;
 
-                var nick = rawNick;
-                var modes = client.ServerInfo.GetModesForNick(nick);
+                    // Parse hostmask
+                    var nick = hostmask.Substring(0, hostmask.IndexOf("!"));
+                    var ident = hostmask.Substring(nick.Length + 1, hostmask.LastIndexOf("@") - (nick.Length + 1));
+                    var hostname = hostmask.Substring(hostmask.LastIndexOf("@") + 1);
 
-                if (modes.Count > 0)
-                    nick = rawNick.Remove(0, modes.Count);
+                    // Get user modes
+                    var modes = client.ServerInfo.GetModesForNick(nick);
+                    if (modes.Count > 0)
+                        nick = nick.Remove(0, modes.Count);
 
-                var user = client.Users.GetOrAdd(nick);
+                    var user = client.Users.GetOrAdd(nick);
+                    if (user.Hostname != hostname && user.User != ident)
+                    {
+                        user.Hostname = hostname;
+                        user.User = ident;
+                    }
 
-                if (!user.Channels.Contains(channel))
-                    user.Channels.Add(channel);
-                if (!user.ChannelModes.ContainsKey(channel))
-                    user.ChannelModes.Add(channel, modes);
-                else
-                    user.ChannelModes[channel] = modes;
+                    if (!user.Channels.Contains(channel))
+                        user.Channels.Add(channel);
+                    if (!user.ChannelModes.ContainsKey(channel))
+                        user.ChannelModes.Add(channel, modes);
+                    else
+                        user.ChannelModes[channel] = modes;
+                }
+            }
+            else
+            {
+                var channel = client.Channels[message.Parameters[2]];
+                var users = message.Parameters[3].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var rawNick in users)
+                {
+                    if (string.IsNullOrWhiteSpace(rawNick))
+                        continue;
+
+                    var nick = rawNick;
+                    var modes = client.ServerInfo.GetModesForNick(nick);
+
+                    if (modes.Count > 0)
+                        nick = rawNick.Remove(0, modes.Count);
+
+                    var user = client.Users.GetOrAdd(nick);
+
+                    if (!user.Channels.Contains(channel))
+                        user.Channels.Add(channel);
+                    if (!user.ChannelModes.ContainsKey(channel))
+                        user.ChannelModes.Add(channel, modes);
+                    else
+                        user.ChannelModes[channel] = modes;
+                }
             }
         }
 
