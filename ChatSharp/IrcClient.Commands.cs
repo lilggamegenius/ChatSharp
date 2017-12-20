@@ -194,6 +194,18 @@ namespace ChatSharp
                 }));
                 SendRawMessage(whoQuery);
             }
+            else
+            {
+                var whox = new List<ExtendedWho>();
+
+                string whoQuery = string.Format("WHO {0}", target);
+
+                RequestManager.QueueOperation(whoQuery, new RequestOperation(whox, ro =>
+                {
+                    callback?.Invoke((List<ExtendedWho>)ro.State);
+                }));
+                SendRawMessage(whoQuery);
+            }
         }
 
         /// <summary>
