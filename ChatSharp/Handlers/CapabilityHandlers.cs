@@ -42,11 +42,19 @@ namespace ChatSharp.Handlers
                     // Get the accepted capabilities
                     var acceptedCaps = message.Parameters[2].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                     foreach (string acceptedCap in acceptedCaps)
+                    {
                         client.Capabilities.Enable(acceptedCap);
+                        // Begin SASL authentication
+                        if (acceptedCap == "sasl")
+                        {
+                            client.SendRawMessage("AUTHENTICATE PLAIN");
+                            client.IsAuthenticatingSasl = true;
+                        }
+                    }
 
                     // Check if the enabled capabilities count is the same as the ones
                     // acknowledged by the server.
-                    if (client.IsNegotiatingCapabilities && client.Capabilities.Enabled.Count() == acceptedCaps.Count())
+                    if (client.IsNegotiatingCapabilities && client.Capabilities.Enabled.Count() == acceptedCaps.Count() && !client.IsAuthenticatingSasl)
                     {
                         client.SendRawMessage("CAP END");
                         client.IsNegotiatingCapabilities = false;
