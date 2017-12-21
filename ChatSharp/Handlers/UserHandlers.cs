@@ -217,6 +217,11 @@ namespace ChatSharp.Handlers
             }
         }
 
+        public static void HandleLoggedIn(IrcClient client, IrcMessage message)
+        {
+            client.User.Account = message.Parameters[2];
+        }
+
         public static void HandleWhoEnd(IrcClient client, IrcMessage message)
         {
             if (client.ServerInfo.ExtendedWho)

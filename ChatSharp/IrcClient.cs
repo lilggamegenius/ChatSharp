@@ -138,6 +138,11 @@ namespace ChatSharp
         /// If set to False, capability negotiation is finished.
         /// </summary>
         public bool IsNegotiatingCapabilities { get; internal set; }
+        /// <summary>
+        /// Set to True when the client is authenticating with SASL.
+        /// If set to False, SASL authentication is finished.
+        /// </summary>
+        public bool IsAuthenticatingSasl { get; internal set; }
 
         /// <summary>
         /// Creates a new IRC client, but will not connect until ConnectAsync is called.
@@ -169,10 +174,11 @@ namespace ChatSharp
             // List of supported capabilities
             Capabilities.AddRange(new string[] {
                 "server-time", "multi-prefix", "cap-notify", "znc.in/server-time", "znc.in/server-time-iso",
-                "account-notify", "chghost", "userhost-in-names"
+                "account-notify", "chghost", "userhost-in-names", "sasl"
             });
 
             IsNegotiatingCapabilities = false;
+            IsAuthenticatingSasl = false;
 
             RandomNumber = new Random();
         }

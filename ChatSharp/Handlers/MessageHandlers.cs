@@ -48,6 +48,7 @@ namespace ChatSharp.Handlers
             client.SetHandler("330", UserHandlers.HandleWhoIsLoggedInAs);
             client.SetHandler("352", UserHandlers.HandleWho);
             client.SetHandler("354", UserHandlers.HandleWhox);
+            client.SetHandler("900", UserHandlers.HandleLoggedIn); // ERR_LOGGEDIN
             client.SetHandler("ACCOUNT", UserHandlers.HandleAccount);
             client.SetHandler("CHGHOST", UserHandlers.HandleChangeHost);
 
@@ -76,6 +77,14 @@ namespace ChatSharp.Handlers
 
             // Capability handlers
             client.SetHandler("CAP", CapabilityHandlers.HandleCapability);
+
+            // SASL handlers
+            client.SetHandler("AUTHENTICATE", SaslHandlers.HandleAuthentication);
+            client.SetHandler("903", SaslHandlers.HandleError); // ERR_SASLSUCCESS
+            client.SetHandler("904", SaslHandlers.HandleError); // ERR_SASLFAIL
+            client.SetHandler("905", SaslHandlers.HandleError); // ERR_SASLTOOLONG
+            client.SetHandler("906", SaslHandlers.HandleError); // ERR_SASLABORTED
+            client.SetHandler("907", SaslHandlers.HandleError); // ERR_SASLALREADY
         }
 
         public static void HandleNick(IrcClient client, IrcMessage message)
