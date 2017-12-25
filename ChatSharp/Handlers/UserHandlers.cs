@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using System.Linq;
-using System.Text;
 
 namespace ChatSharp.Handlers
 {
-    public static class UserHandlers
+    internal static class UserHandlers
     {
         public static void HandleWhoIsUser(IrcClient client, IrcMessage message)
         {
@@ -16,6 +14,14 @@ namespace ChatSharp.Handlers
                 whois.User.User = message.Parameters[2];
                 whois.User.Hostname = message.Parameters[3];
                 whois.User.RealName = message.Parameters[5];
+                if (client.Users.Contains(whois.User.Nick))
+                {
+                    var user = client.Users[whois.User.Nick];
+                    user.User = whois.User.User;
+                    user.Hostname = whois.User.Hostname;
+                    user.RealName = whois.User.RealName;
+                    whois.User = user;
+                }
             }
         }
 
@@ -57,9 +63,12 @@ namespace ChatSharp.Handlers
         public static void HandleWhoIsEnd(IrcClient client, IrcMessage message)
         {
             var request = client.RequestManager.DequeueOperation("WHOIS " + message.Parameters[1]);
+            var whois = (WhoIs)request.State;
+            if (!client.Users.Contains(whois.User.Nick))
+                client.Users.Add(whois.User);
             if (request.Callback != null)
                 request.Callback(request);
-            client.OnWhoIsReceived(new Events.WhoIsReceivedEventArgs((WhoIs) request.State));
+            client.OnWhoIsReceived(new Events.WhoIsReceivedEventArgs(whois));
         }
     }
 }
