@@ -113,12 +113,19 @@ namespace ChatSharp.Handlers
 
         public static void HandleKick(IrcClient client, IrcMessage message)
         {
-            var channel = client.Channels[message.Parameters[0]];
-            var kicked = channel.Users[message.Parameters[1]];
-            if (kicked.Channels.Contains(channel))
-                kicked.Channels.Remove(channel);
-            client.OnUserKicked(new KickEventArgs(channel, new IrcUser(message.Prefix),
-                kicked, message.Parameters[2]));
+            try
+            {
+                var channel = client.Channels[message.Parameters[0]];
+                var kicked = channel.Users[message.Parameters[1]];
+                if (kicked.Channels.Contains(channel))
+                    kicked.Channels.Remove(channel);
+                client.OnUserKicked(new KickEventArgs(channel, new IrcUser(message.Prefix),
+                    kicked, message.Parameters[2]));
+            }
+            catch (Exception)
+            {
+                // TODO: Log it
+            }
         }
     }
 }
