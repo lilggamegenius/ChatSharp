@@ -52,7 +52,8 @@ namespace ChatSharp
                 foreach (string rawTag in rawTags.Split(';'))
                 {
                     var replacedTag = rawTag.Replace(@"\:", ";");
-                    KeyValuePair<string, string> tag = new KeyValuePair<string, string>(replacedTag, string.Empty);
+                    // The spec declares `@a=` as a tag with an empty value, while `@b;` as a tag with a null value
+                    KeyValuePair<string, string> tag = new KeyValuePair<string, string>(replacedTag, null);
 
                     if (replacedTag.Contains("="))
                     {

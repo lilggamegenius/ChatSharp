@@ -83,6 +83,18 @@ namespace ChatSharp.Tests
         }
 
         [TestMethod]
+        public void NewValidMessage_TagsNoValue()
+        {
+            IrcMessage fromMessage = new IrcMessage("@a=;b :nick!ident@host.com PRIVMSG me :Hello");
+            KeyValuePair<string, string>[] compareTags = new KeyValuePair<string, string>[]
+            {
+                new KeyValuePair<string, string>("a", ""),
+                new KeyValuePair<string, string>("b", null),
+            };
+            CollectionAssert.AreEqual(fromMessage.Tags, compareTags);
+        }
+
+        [TestMethod]
         public void Timestamp_CompareISOString()
         {
             IrcMessage[] messages = {
