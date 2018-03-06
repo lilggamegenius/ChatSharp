@@ -28,7 +28,7 @@ namespace ChatSharp
             if (!compatibility)
             {
                 DateTime parsedDate;
-                if (!DateTime.TryParseExact(date, @"yyyy-MM-dd\THH:mm:ss.fff\Z", CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out parsedDate))
+                if (!DateTime.TryParse(date, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out parsedDate))
                     throw new ArgumentException("The date string was provided in an invalid format.", date);
 
                 Date = parsedDate;
