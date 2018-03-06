@@ -24,7 +24,7 @@ namespace ChatSharp.Handlers
                 }
                 // TODO: Consider doing this differently
                 // TODO: Allow users to specify other things to handle
-                if (value != null)
+                if (!string.IsNullOrEmpty(value))
                 {
                     switch (key.ToUpper())
                     {
