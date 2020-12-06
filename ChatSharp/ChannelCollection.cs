@@ -40,10 +40,10 @@ namespace ChatSharp
         /// <summary>
         /// Join the specified channel. Only applicable for your own user.
         /// </summary>
-        public void Join(string name)
+        public void Join(string name, string key = null)
         {
             if (Client != null)
-                Client.JoinChannel(name);
+                Client.JoinChannel(name, key);
             else
                 throw new InvalidOperationException("Cannot make other users join channels.");
         }

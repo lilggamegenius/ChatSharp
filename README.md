@@ -48,7 +48,7 @@ ChatSharp has no dependencies.
 
 ## Support
 
-Open a [Github issue](https://github.com/SirCmpwn/ChatSharp/issues) describing
+Open a [Github issue](https://github.com/lilggamegenius/ChatSharp/issues) describing
 your problem.
 
 ## Development / Contributing
