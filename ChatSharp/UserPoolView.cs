@@ -23,7 +23,7 @@ namespace ChatSharp
         {
             get
             {
-                var user = Users.FirstOrDefault(u => u.Nick == nick);
+                var user = Users.FirstOrDefault(u => u.Nick.Equals(nick, StringComparison.OrdinalIgnoreCase));
                 if (user == null)
                     throw new KeyNotFoundException();
                 return user;

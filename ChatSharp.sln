@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.26430.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatSharp", "ChatSharp\ChatSharp.csproj", "{4033AFFA-BEA3-4BDF-84EA-59A23360FD36}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatSharp.Tests", "ChatSharpTests\ChatSharp.Tests.csproj", "{24D593EC-CA81-41DC-9FE7-A434DDDE229D}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,18 +25,6 @@ Global
 		{4033AFFA-BEA3-4BDF-84EA-59A23360FD36}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{4033AFFA-BEA3-4BDF-84EA-59A23360FD36}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{4033AFFA-BEA3-4BDF-84EA-59A23360FD36}.Release|x86.ActiveCfg = Release|Any CPU
-		{24D593EC-CA81-41DC-9FE7-A434DDDE229D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{24D593EC-CA81-41DC-9FE7-A434DDDE229D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{24D593EC-CA81-41DC-9FE7-A434DDDE229D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{24D593EC-CA81-41DC-9FE7-A434DDDE229D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{24D593EC-CA81-41DC-9FE7-A434DDDE229D}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{24D593EC-CA81-41DC-9FE7-A434DDDE229D}.Debug|x86.Build.0 = Debug|Any CPU
-		{24D593EC-CA81-41DC-9FE7-A434DDDE229D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{24D593EC-CA81-41DC-9FE7-A434DDDE229D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{24D593EC-CA81-41DC-9FE7-A434DDDE229D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{24D593EC-CA81-41DC-9FE7-A434DDDE229D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{24D593EC-CA81-41DC-9FE7-A434DDDE229D}.Release|x86.ActiveCfg = Release|Any CPU
-		{24D593EC-CA81-41DC-9FE7-A434DDDE229D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
