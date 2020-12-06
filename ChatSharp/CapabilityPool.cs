@@ -56,6 +56,8 @@ namespace ChatSharp
         {
             if (Capabilities.Any(cap => cap.Name == name && cap.IsEnabled))
                 return;
+			if(name.StartsWith("twitch.tv/")) //non-standard capabilities, ignore them
+				return;
 
             this[name].IsEnabled = true;
         }

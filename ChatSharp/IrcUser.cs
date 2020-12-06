@@ -9,17 +9,21 @@ namespace ChatSharp
     /// </summary>
     public class IrcUser : IEquatable<IrcUser>
     {
-        internal IrcUser()
+
+		public IrcClient Client { get; internal set; }
+		public ServerInfo ServerInfo=>Client.ServerInfo;
+		internal IrcUser(IrcClient client)
         {
             Channels = new ChannelCollection();
             ChannelModes = new Dictionary<IrcChannel, List<char?>>();
             Account = "*";
-        }
+			Client = client;
+		}
 
         /// <summary>
         /// Constructs an IrcUser given a hostmask or nick.
         /// </summary>
-        public IrcUser(string host) : this()
+        public IrcUser(IrcClient client, string host) : this(client)
         {
             if (!host.Contains("@") && !host.Contains("!"))
                 Nick = host;
@@ -37,12 +41,12 @@ namespace ChatSharp
                     Hostname = mask[2];
                 }
             }
-        }
+		}
 
         /// <summary>
         /// Constructs an IrcUser given a nick and user.
         /// </summary>
-        public IrcUser(string nick, string user) : this()
+        public IrcUser(IrcClient client, string nick, string user) : this(client)
         {
             Nick = nick;
             User = user;
@@ -53,7 +57,7 @@ namespace ChatSharp
         /// <summary>
         /// Constructs an IRC user given a nick, user, and password.
         /// </summary>
-        public IrcUser(string nick, string user, string password) : this(nick, user)
+        public IrcUser(IrcClient client, string nick, string user, string password) : this(client, nick, user)
         {
             Password = password;
         }
@@ -61,7 +65,7 @@ namespace ChatSharp
         /// <summary>
         /// Constructs an IRC user given a nick, user, password, and real name.
         /// </summary>
-        public IrcUser(string nick, string user, string password, string realName) : this(nick, user, password)
+        public IrcUser(IrcClient client, string nick, string user, string password, string realName) : this(client, nick, user, password)
         {
             RealName = realName;
         }
@@ -116,6 +120,15 @@ namespace ChatSharp
                 return Nick + "!" + User + "@" + Hostname;
             }
         }
+
+
+		/// <summary>
+		/// Sends a PRIVMSG to this channel.
+		/// </summary>
+		public void SendMessage(string message)
+		{
+			Client.SendMessage(message, Nick);
+		}
 
         /// <summary>
         /// Returns true if the user matches the given mask. Can be used to check if a ban applies

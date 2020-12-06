@@ -8,13 +8,13 @@ namespace ChatSharp
     /// </summary>
     public class IrcChannel
     {
-        private IrcClient Client { get; set; }
+        public IrcClient Client { get; private set; }
 
         internal string _Topic;
         /// <summary>
         /// The channel topic. Will send a TOPIC command if set.
         /// </summary>
-        public string Topic 
+        public string Topic
         {
             get
             {

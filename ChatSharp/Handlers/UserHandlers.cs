@@ -80,7 +80,7 @@ namespace ChatSharp.Handlers
                 if (query.Key != string.Empty && query.Value != null)
                 {
                     var whoList = (List<ExtendedWho>)client.RequestManager.PeekOperation(query.Key).State;
-                    var who = new ExtendedWho();
+                    var who = new ExtendedWho(client);
 
                     who.Channel = message.Parameters[1];
                     who.User.User = message.Parameters[2];
@@ -124,7 +124,7 @@ namespace ChatSharp.Handlers
             if (whoxQuery.Key != string.Empty && whoxQuery.Value != null)
             {
                 var whoxList = (List<ExtendedWho>)client.RequestManager.PeekOperation(whoxQuery.Key).State;
-                var whox = new ExtendedWho();
+                var whox = new ExtendedWho(client);
 
                 string key = whoxQuery.Key;
                 string[] queryParts = key.Split(new[] { ' ' });

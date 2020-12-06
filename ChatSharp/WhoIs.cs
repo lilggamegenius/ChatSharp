@@ -6,9 +6,9 @@ namespace ChatSharp
     /// </summary>
     public class WhoIs
     {
-        internal WhoIs()
+        internal WhoIs(IrcClient client)
         {
-            User = new IrcUser();
+            User = new IrcUser(client);
             SecondsIdle = -1;
             Channels = new string[0];
         }

@@ -4,7 +4,9 @@ using System.Linq;
 
 namespace ChatSharp
 {
-    public partial class IrcClient
+	using System.Text;
+
+	public partial class IrcClient
     {
         /// <summary>
         /// Changes your nick.
@@ -74,33 +76,60 @@ namespace ChatSharp
         /// <summary>
         /// Joins the specified channel.
         /// </summary>
-        public void JoinChannel(string channel, string key = null)
-        {
-            if (Channels.Contains(channel))
-                throw new InvalidOperationException("Client is already present in channel.");
-
-            string joinCmd = string.Format("JOIN {0}", channel);
-            if (!string.IsNullOrEmpty(key))
-                joinCmd += string.Format(" {0}", key);
-
-            SendRawMessage(joinCmd, channel);
-
-            // account-notify capability
-            var flags = WhoxField.Nick | WhoxField.Hostname | WhoxField.AccountName | WhoxField.Username;
-
-            if (Capabilities.IsEnabled("account-notify"))
-                Who(channel, WhoxFlag.None, flags, (whoList) =>
-                {
-                    if (whoList.Count > 0)
-                    {
-                        foreach (var whoQuery in whoList)
-                        {
-                            var user = Users.GetOrAdd(whoQuery.User.Hostmask);
-                            user.Account = whoQuery.User.Account;
-                        }
-                    }
-                });
+        public void JoinChannel(string channel, string key = null){
+			IList<string> keyList = null;
+			if(key != null){
+				keyList = new List<string>{key};
+			}
+			JoinChannels(new List<string>{channel}, keyList);
         }
+
+
+		/// <summary>
+		/// Joins multiple channels at once
+		/// </summary>
+		public void JoinChannels(IList<string> channels, IList<string> keys = null){
+			foreach(string channel in channels){
+				if (Channels.Contains(channel))
+					throw new InvalidOperationException($"Client is already present in channel {channel}.");
+			}
+
+			StringBuilder joinBuilder = new StringBuilder("JOIN ");
+			if(keys == null || keys.Count != channels.Count){
+				joinBuilder.Append(string.Join(",", channels));
+			}
+			else{
+				for(int i = 0; i < channels.Count; i++){
+					joinBuilder.Append(channels[i]);
+					if(!string.IsNullOrEmpty(keys[i])){
+						joinBuilder.AppendFormat(" {0}", keys[i]);
+					}
+					joinBuilder.Append(',');
+				}
+			}
+
+			string joinCmd = joinBuilder.ToString();
+
+			SendRawMessage(joinCmd);
+
+			// account-notify capability
+			var flags = WhoxField.Nick | WhoxField.Hostname | WhoxField.AccountName | WhoxField.Username;
+
+			if (Capabilities.IsEnabled("account-notify"))
+				foreach(string channel in channels){
+					Who(channel, WhoxFlag.None, flags, (whoList) =>
+					{
+						if (whoList.Count > 0)
+						{
+							foreach (var whoQuery in whoList)
+							{
+								var user = Users.GetOrAdd(whoQuery.User.Hostmask);
+								user.Account = whoQuery.User.Account;
+							}
+						}
+					});
+				}
+		}
 
         /// <summary>
         /// Sets the topic for the specified channel.
@@ -158,7 +187,7 @@ namespace ChatSharp
         /// </summary>
         public void WhoIs(string nick, Action<WhoIs> callback)
         {
-            var whois = new WhoIs();
+            var whois = new WhoIs(this);
             RequestManager.QueueOperation("WHOIS " + nick, new RequestOperation(whois, ro =>
                 {
                     if (callback != null)

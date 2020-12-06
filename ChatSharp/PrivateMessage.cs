@@ -13,11 +13,19 @@ namespace ChatSharp
             Message = message.Parameters[1];
 
             User = client.Users.GetOrAdd(message.Prefix);
-            if (serverInfo.ChannelTypes.Any(c => Source.StartsWith(c.ToString())))
-                IsChannelMessage = true;
-            else
-                Source = User.Nick;
-        }
+			char[] channelTypes = serverInfo.ChannelTypes;
+			if(channelTypes == null){
+				channelTypes = new[]{'#'}; // Assume this is twitch
+			}
+			if(channelTypes.Any(c=>Source.StartsWith(c.ToString()))){
+				IsChannelMessage = true;
+				if(client.Channels.Contains(Source)){
+					Channel = client.Channels[Source];
+				}
+			} else{
+				Source = User.Nick;
+			}
+		}
 
         /// <summary>
         /// The user that sent this message.
@@ -35,5 +43,9 @@ namespace ChatSharp
         /// True if this message was posted to a channel.
         /// </summary>
         public bool IsChannelMessage { get; set; }
+		/// <summary>
+		/// The channel this message came from, if it is a channel message
+		/// </summary>
+		public IrcChannel Channel { get; set; }
     }
 }

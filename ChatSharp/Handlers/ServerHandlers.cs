@@ -7,9 +7,12 @@ namespace ChatSharp.Handlers
     {
         public static void HandleISupport(IrcClient client, IrcMessage message)
         {
-            if (client.ServerInfo == null)
-                client.ServerInfo = new ServerInfo();
-            foreach (var item in message.Parameters)
+			if(client.ServerInfo == null){
+				client.ServerInfo = new ServerInfo();
+				client.ServerInfo.NetworkName = client.ServerAddress; // Handle servers that do not send a network name but setting temp name
+			}
+
+			foreach (var item in message.Parameters)
             {
                 string key, value;
                 if (!item.Contains("="))

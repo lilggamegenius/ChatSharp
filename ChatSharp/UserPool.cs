@@ -11,10 +11,12 @@ namespace ChatSharp
     /// </summary>
     public class UserPool : IEnumerable<IrcUser>
     {
+		public IrcClient Client { get; private set; }
         private List<IrcUser> Users { get; set; }
 
-        internal UserPool()
-        {
+
+        internal UserPool(IrcClient client){
+			Client = client;
             Users = new List<IrcUser>();
         }
 
@@ -52,7 +54,7 @@ namespace ChatSharp
 
         /// <summary>
         /// Returns true if any user in the pool matches this mask. Note that not all users
-        /// in the user pool will be fully populated, even if you set ClientSettings.WhoIsOnJoin 
+        /// in the user pool will be fully populated, even if you set ClientSettings.WhoIsOnJoin
         /// to true (it takes time to whois everyone in your channels).
         /// </summary>
         public bool ContainsMask(string mask)
@@ -78,7 +80,7 @@ namespace ChatSharp
 
         internal IrcUser GetOrAdd(string prefix)
         {
-            var user = new IrcUser(prefix);
+            var user = new IrcUser(Client, prefix);
             if (Contains(user.Nick))
             {
                 var ret = this[user.Nick];
@@ -94,7 +96,7 @@ namespace ChatSharp
 
         internal IrcUser Get(string prefix)
         {
-            var user = new IrcUser(prefix);
+            var user = new IrcUser(Client, prefix);
             if (Contains(user.Nick))
                 return this[user.Nick];
             throw new KeyNotFoundException();

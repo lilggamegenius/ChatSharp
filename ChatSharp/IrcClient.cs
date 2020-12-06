@@ -155,6 +155,7 @@ namespace ChatSharp
             if (serverAddress == null) throw new ArgumentNullException("serverAddress");
             if (user == null) throw new ArgumentNullException("user");
 
+			user.Client = this;
             User = user;
             ServerAddress = serverAddress;
             Encoding = Encoding.UTF8;
@@ -167,7 +168,7 @@ namespace ChatSharp
             ServerInfo = new ServerInfo();
             PrivmsgPrefix = "";
             Channels = User.Channels = new ChannelCollection(this);
-            Users = new UserPool();
+            Users = new UserPool(this);
             Users.Add(User); // Add self to user pool
             Capabilities = new CapabilityPool();
 
@@ -193,7 +194,7 @@ namespace ChatSharp
             ReadBuffer = new byte[ReadBufferLength];
             ReadBufferIndex = 0;
             PingTimer = new Timer(30000);
-            PingTimer.Elapsed += (sender, e) => 
+            PingTimer.Elapsed += (sender, e) =>
             {
                 if (!string.IsNullOrEmpty(ServerNameFromPing))
                     SendRawMessage("PING :{0}", ServerNameFromPing);

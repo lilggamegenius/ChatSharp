@@ -103,7 +103,7 @@ namespace ChatSharp.Handlers
 
         public static void HandleQuit(IrcClient client, IrcMessage message)
         {
-            var user = new IrcUser(message.Prefix);
+            var user = new IrcUser(client, message.Prefix);
             if (client.User.Nick != user.Nick)
             {
                 client.Users.Remove(user);
@@ -181,12 +181,12 @@ namespace ChatSharp.Handlers
                         // TODO: Support the ones here that aren't done properly
                         if (client.ServerInfo.SupportedChannelModes.ParameterizedSettings.Contains(c))
                         {
-                            client.OnModeChanged(new ModeChangeEventArgs(channel.Name, new IrcUser(message.Prefix), 
+                            client.OnModeChanged(new ModeChangeEventArgs(channel.Name, new IrcUser(client, message.Prefix),
                                 (add ? "+" : "-") + c + " " + message.Parameters[i++]));
                         }
                         else if (client.ServerInfo.SupportedChannelModes.ChannelLists.Contains(c))
                         {
-                            client.OnModeChanged(new ModeChangeEventArgs(channel.Name, new IrcUser(message.Prefix), 
+                            client.OnModeChanged(new ModeChangeEventArgs(channel.Name, new IrcUser(client, message.Prefix),
                                 (add ? "+" : "-") + c + " " + message.Parameters[i++]));
                         }
                         else if (client.ServerInfo.SupportedChannelModes.ChannelUserModes.Contains(c))
@@ -201,7 +201,7 @@ namespace ChatSharp.Handlers
                                         return u.ChannelModes[channel].Contains(c);
                                     })));
                             }
-                            var user = new IrcUser(message.Parameters[i]);
+                            var user = new IrcUser(client, message.Parameters[i]);
                             if (add)
                             {
                                 if (!channel.UsersByMode[c].Contains(user.Nick))
@@ -213,7 +213,7 @@ namespace ChatSharp.Handlers
                                 if (channel.UsersByMode[c].Contains(user.Nick))
                                     user.ChannelModes[channel] = null;
                             }
-                            client.OnModeChanged(new ModeChangeEventArgs(channel.Name, new IrcUser(message.Prefix), 
+                            client.OnModeChanged(new ModeChangeEventArgs(channel.Name, new IrcUser(client, message.Prefix),
                                 (add ? "+" : "-") + c + " " + message.Parameters[i++]));
                         }
                         if (client.ServerInfo.SupportedChannelModes.Settings.Contains(c))
@@ -225,7 +225,7 @@ namespace ChatSharp.Handlers
                             }
                             else
                                 channel.Mode = channel.Mode.Replace(c.ToString(), string.Empty);
-                            client.OnModeChanged(new ModeChangeEventArgs(channel.Name, new IrcUser(message.Prefix), 
+                            client.OnModeChanged(new ModeChangeEventArgs(channel.Name, new IrcUser(client, message.Prefix),
                                 (add ? "+" : "-") + c));
                         }
                     }

@@ -20,8 +20,10 @@ namespace ChatSharp
             Client = client;
         }
 
-        private IrcClient Client { get; set; }
+        public IrcClient Client { get; private set; }
         private List<IrcChannel> Channels { get; set; }
+
+        public int Count=>Channels.Count;
 
         internal void Add(IrcChannel channel)
         {

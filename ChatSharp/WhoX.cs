@@ -9,11 +9,11 @@ namespace ChatSharp
     /// </summary>
     public class ExtendedWho
     {
-        internal ExtendedWho()
+        internal ExtendedWho(IrcClient client)
         {
             QueryType = -1;
             Channel = "*";
-            User = new IrcUser();
+            User = new IrcUser(client);
             IP = string.Empty;
             Server = string.Empty;
             Flags = string.Empty;

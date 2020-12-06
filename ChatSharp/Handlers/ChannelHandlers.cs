@@ -165,7 +165,7 @@ namespace ChatSharp.Handlers
                 var kicked = channel.Users[message.Parameters[1]];
                 if (kicked.Channels.Contains(channel))
                     kicked.Channels.Remove(channel);
-                client.OnUserKicked(new KickEventArgs(channel, new IrcUser(message.Prefix),
+                client.OnUserKicked(new KickEventArgs(channel, new IrcUser(client, message.Prefix),
                     kicked, message.Parameters[2]));
             }
             catch (Exception)
